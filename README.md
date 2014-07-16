@@ -31,6 +31,7 @@ Actually we define two bindings - widget and widgetInline. The first one uses re
 This case binding uses require.js to load widgets/test1/main.js (AMD module) and widgets/test1/main.html (html template loaded with require text! plugin), and then applies template binding with data property from AMD-module and html property from html string (template binding uses string template engine).
 
 Next, if we want to load only widgets/test1/main.js and use template binding with data property from it without an html property, we should write something like:
+
 	<!-- ko widgetInline: 'test1' -->
 	  <div>This is an inline example of widget binging.</div>
 	  <div data-bind="text:param1"></div>
