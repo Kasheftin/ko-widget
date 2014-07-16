@@ -20,7 +20,7 @@ The code consists of two parts - string template engine and widget binding itsel
 String Template Engine
 ----------------------
 
-[Knockout](http://knockoutjs.com) has two common template engines. They are named template engine and inline template engine. We want to load widget's template from file with [Require.js text plugin](https://github.com/requirejs/text), that's why we need custom template engine that could render template from string of html code. Here is is - [stringTemplateEngine.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/js/stringTemplateEngine.js). We redefined nativeTemplateEngine.makeTemplateSource method, and now native template binding supports optional "html" parameter that should be an (observable) string with html code. Any other template engines and options are also supported the same way as before. Here's the [example 1](http://kasheftin.github.io/ko-widget/index-example1.html) that shows that our template engine hasn't broken anything.
+[Knockout](http://knockoutjs.com) has two common template engines. They are named template engine and inline template engine. We want to load widget's template from file with [Require.js text plugin](https://github.com/requirejs/text), that's why we need custom template engine that could render template from string of html code. Here it is - [stringTemplateEngine.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/js/stringTemplateEngine.js). We redefined nativeTemplateEngine.makeTemplateSource method, and now native template binding supports optional "html" parameter that should be a (observable) string with html code. Any other template engines and options are also supported the same way as before. Here's the [example 1](http://kasheftin.github.io/ko-widget/index-example1.html) that shows that our template engine hasn't broken anything.
 
 Widget binding
 --------------
@@ -51,7 +51,7 @@ One can use an observable string as a widget name, see [example 3](http://kashef
 
 Sending options to widget from binding
 --------------------------------------
-All binding widget options are available from inside widget constructor. In case options are string we set them as widget name, otherwise there should be defined name property [example 4](http://kasheftin.github.io/ko-widget/index-example4.html):
+All binding widget options are available from inside widget constructor. In case options are string we set them as widget name, otherwise there should be defined name property, see [example 4](http://kasheftin.github.io/ko-widget/index-example4.html):
 
 	<!-- ko widget: {name:'test1',param1:'This parameter is set from widget binding'} --><!-- /ko -->
 
