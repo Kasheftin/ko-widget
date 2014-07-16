@@ -25,7 +25,7 @@ String Template Engine
 Widget binding
 --------------
 
-Actually we define two bindings - widget and widgetInline. The first one uses require.js to load JS-code from some AMD module and template from corresponding html file. The second one loads only AMD module and uses inline html code as template (it uses native template engine). [Example 2](index-example2.html) - here are some examples. Let's consider this string: 
+Actually we define two bindings - widget and widgetInline. The first one uses require.js to load JS-code from some AMD module and template from corresponding html file. The second one loads only AMD module and uses inline html code as template (it uses native template engine). Here are some [examples](index-example2.html). Let's consider this string: 
 
     <!-- ko widget: 'test1' --><!-- /ko -->
 This case binding uses require.js to load widgets/test1/main.js (AMD module) and widgets/test1/main.html (html template loaded with require text! plugin), and then applies template binding with data property from AMD-module and html property from html string (template binding uses string template engine).
