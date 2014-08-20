@@ -2,13 +2,15 @@ require.config({
     waitSeconds: 0,
     baseUrl: "js",
     paths: {
-        "knockout"     : "../lib/knockout/dist/knockout.debug",
-        "domReady"     : "../lib/requirejs-domready/domReady",
-        "EventEmitter" : "../lib/EventEmitter/EventEmitter"
+        "jquery"          : "../lib/jquery/dist/jquery",
+        "knockout-source" : "../lib/knockout/dist/knockout.debug",
+        "domReady"        : "../lib/requirejs-domready/domReady",
+        "EventEmitter"    : "../lib/EventEmitter/EventEmitter",
+        "text"            : "../lib/requirejs-text/text"
     }
 });
 
-require(["domReady!","knockout","stringTemplateEngine"],function(doc,ko) {
+require(["domReady!","knockout"],function(doc,ko) {
     var App = function() {
         this.param1 = ko.observable("value1");
         this.param2 = ko.observable("value2");

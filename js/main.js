@@ -10,8 +10,9 @@ require.config({
     }
 });
 
-require(["domReady!","jquery","knockout"],function(doc,$,ko) {
-    ko.applyBindings({});
-    ko.createWidget($("#widgetBindingContainer").get(0),"test1",this);
-    ko.createWidgetInline($("#widgetInlineBindingContainer").get(0),{name:"test1",param1:"This option is set from javascript constructor"},this);
+require(["domReady!","knockout","EventEmitter"],function(doc,ko,EventEmitter) {
+    var RootContest = function() {
+        this.eventEmitter = new EventEmitter();
+    }
+    ko.applyBindings(new RootContest);
 });
