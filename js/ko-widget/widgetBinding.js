@@ -37,6 +37,7 @@ define(function() {
 					// We need _parentWidget and _widgetElement in widget.destroy method 
 					o.w._parentWidget = o.parentWidget;
 					o.w._widgetElement = o.element;
+					o.w._widgetName = o.widgetName;
 
 					// Registering widget in parentWidget
 					if (!o.w._childrenWidgets)

@@ -33,6 +33,7 @@ define(["jquery","knockout"],function($,ko) {
 	TestReq.prototype.runPing = function() {
 		var self = this;
 		this.eventEmitter.emit("ping",this.id);
+		this.pingTimeout && clearTimeout(this.pingTimeout);
 		this.pingTimeout = setTimeout(function() {
 			self.runPing();
 		},1000);
