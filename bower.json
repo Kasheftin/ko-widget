@@ -1,6 +1,6 @@
 {
-    "name": "knockout-templateEngine",
-    "version": "0.0.1",
+    "name": "ko-widget",
+    "version": "1.0.1",
     "dependencies": {
        "requirejs": "latest",
         "requirejs-text": "latest",
@@ -9,7 +9,6 @@
         "jquery": "latest",
         "knockout": "latest",
         "EventEmitter": "https://github.com/Wolfy87/EventEmitter.git",
-        "almond": "latest",
-        "r.js": "latest"
+        "almond": "latest"
     }
 }
