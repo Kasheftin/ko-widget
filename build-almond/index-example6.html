@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:fb="http://ogp.me/ns/fb#">
+<head>
+	<meta charset="utf-8" />
+	<title>Knockout widget binding example 6</title>
+	<meta name="description" content="" />
+	<meta name="author" content="Alexey Kuznetsov" />
+	<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link rel="stylesheet"  href="lib/bootstrap/dist/css/bootstrap.css" />
+	<link rel="stylesheet"  href="css/debuggerWidget.css" />
+</head>
+<body>
+
+<div class="container">
+	<br>
+	<div class="well">
+		<h3>Two widgets that communicate through common event emitter</h3>
+		<br>
+		<div class="well" data-bind="widget:{name:'testEmit',widgetId:'widget1',sendTo:'widget2',sendData:'Data from widget1 to widget2'}"></div>
+		<div class="well" data-bind="widget:{name:'testEmit',widgetId:'widget2',sendTo:'widget1',sendData:'Data from widget2 to widget1'}"></div>
+	</div>
+</div>
+
+<script src="main.js"></script>
+
+</body>
+</html>

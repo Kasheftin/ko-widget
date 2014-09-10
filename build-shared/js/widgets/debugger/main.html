@@ -1,0 +1,79 @@
+<div class="dw-expandControl" data-bind="visible:!isExpanded()">
+	<button class="btn btn-default btn-xs" data-bind="click:isExpanded.bind($data,true)">Debugger</button>
+</div>
+<div class="dw-container" data-bind="visible:isExpanded">
+	<div class="well">
+		<a class="close" href="#" data-bind="click:isExpanded.bind($data,false)">&times;</a>
+		<ul class="nav nav-tabs">
+			<li data-bind="css:{active:mode()=='create'}"><a href="#" data-bind="click:mode.bind($data,'create')">Create New Widget</a></li>
+			<li data-bind="css:{active:mode()=='list'}"><a href="#" data-bind="click:mode.bind($data,'list')">Widget's list</a></li>
+			<li data-bind="css:{active:mode()=='run'}"><a href="#" data-bind="click:mode.bind($data,'run')">Apply method</a></li>
+		</ul>
+		<div class="clearfix dw-content" data-bind="visible:mode()=='create'">
+			<div class="form-inline">
+				<div class="form-group">
+					<label for="widgetContainer">Add to:</label>
+					<input class="form-control" type="text" id="widgetContainer" data-bind="value:widgetContainer" style="width:150px;">
+				</div>
+				<div class="form-group">
+					<label for="widgetCss">Css:</label>
+					<input class="form-control" type="text" id="widgetCss" data-bind="value:widgetCss" style="width:150px;">
+				</div>
+				<div class="form-group">
+					<label for="widgetOptions">Options:</label>
+					<input class="form-control" type="text" id="widgetOptions" data-bind="value:widgetOptionsString" style="width:200px;">
+				</div>
+				<div class="form-group">
+					<button class="btn btn-default" data-bind="enable:!isLoading(),click:start">Create</button>
+				</div>
+				<div class="pull-right" data-bind="visible:isLoading">
+					<div class="dw-loading">Loading</div>
+				</div>
+			</div>
+		</div>
+		<div class="clearfix dw-content" data-bind="visible:mode()=='list'">
+			<div class="form-inline">
+				<strong>Widgets on the page:</strong> <span data-bind="template:{name:'widgetsTree',data:{rws:core._childrenWidgets,level:0,debugger:$data}}"></span>
+			</div>
+		</div>
+		<div class="clearfix dw-content" data-bind="visible:mode()=='run'">
+			<div class="form-inline">
+				<div class="form-group">
+					<label for="selectedWidget">Widget:</label>
+					<select class="form-control" data-bind="value:selectedWidget">
+						<option>--root--</option>
+						<!-- ko template:{name:"widgetsOptions",data:{rws:core._childrenWidgets,level:0}} --><!-- /ko -->
+					</select>
+				</div>
+				<div class="form-group">
+					<label>Method:</label>
+					<select class="form-control" data-bind="value:selectedWidgetMethod,options:selectedWidgetMethods,optionsCaption:'---'"></select>
+				</div>
+				<div class="form-group" data-bind="visible:selectedWidgetMethod">
+					<label>Attributes:</label>
+					<input class="form-control" data-bind="value:selectedWidgetMethodAttributes">
+					<button class="btn btn-default" data-bind="click:applySelectedWidgetMethod">Apply</button>
+				</div>
+			</div>
+	</div>
+</div>
+
+<script type="text/template" id="widgetsTree">
+	<!-- ko foreach: rws -->
+		<a href="#" data-bind="text:_widgetName,click:$parent.debugger.selectWidget.bind($parent.debugger,$data)"></a>
+		<!-- ko if: _childrenWidgets().length>0 -->
+			<span>(</span>
+			<!-- ko template:{name:"widgetsTree",data:{rws:_childrenWidgets,level:$parent.level+1,debugger:$parent.debugger}} --><!-- /ko -->
+			<span>)</span>
+		<!-- /ko -->
+	<!-- /ko -->
+</script>
+
+<script type="text/template" id="widgetsOptions">
+	<!-- ko foreach: rws -->
+		<option data-bind="value:$data,text:(new Array($parent.level+1)).join('&nbsp;&nbsp;')+_widgetName"></option>
+		<!-- ko if: _childrenWidgets -->
+			<!-- ko template: {name:"widgetsOptions",data:{rws:_childrenWidgets,level:$parent.level+1}} --><!-- /ko -->
+		<!-- /ko -->
+	<!-- /ko -->
+</script>
