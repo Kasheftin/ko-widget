@@ -11,21 +11,21 @@ We use
 
 * [Knockout](http://knockoutjs.com)
 * [Require.js](http://requirejs.org)
-* [Require.js text plugin](https://github.com/requirejs/text) - for loading widget's html templates.
+* [Require.js text plugin](http://github.com/requirejs/text) - for loading widget's html templates.
 * [JQuery](http://jquery.com) - could be simply switched to underscore or any other utility lib.
-* [EventEmitter](https://github.com/Wolfy87/EventEmitter.git) - for communication between widgets.
+* [EventEmitter](http://github.com/Wolfy87/EventEmitter.git) - for communication between widgets.
 
 The code consists of two parts - string template engine and widget binding itself.
 
 String Template Engine
 ----------------------
 
-[Knockout](http://knockoutjs.com) has two common template engines. They are named template engine and inline template engine. We want to load widget's template from file with [Require.js text plugin](https://github.com/requirejs/text), that's why we need custom template engine that could render template from string of html code. Here it is - [stringTemplateEngine.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/js/stringTemplateEngine.js). We redefined nativeTemplateEngine.makeTemplateSource method, and now native template binding supports optional "html" parameter that should be a (observable) string with html code. Any other template engines and options are also supported the same way as before. Here's the [example 1](http://kasheftin.github.io/ko-widget/index-example1.html) that shows that our template engine hasn't broken anything.
+[Knockout](http://knockoutjs.com) has two common template engines. They are named template engine and inline template engine. We want to load widget's template from file with [Require.js text plugin](http://github.com/requirejs/text), that's why we need custom template engine that could render template from string of html code. Here it is - [stringTemplateEngine.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/js/stringTemplateEngine.js). We redefined nativeTemplateEngine.makeTemplateSource method, and now native template binding supports optional "html" parameter that should be a (observable) string with html code. Any other template engines and options are also supported the same way as before. Here's the [example 1](http://kasheftin.github.io/ko-widget/src/index-example1.html) that shows that our template engine hasn't broken anything.
 
 Widget binding
 --------------
 
-Actually we define two bindings - widget and widgetInline. The first one uses require.js to load JS-code from some AMD module and template from corresponding html file. The second one loads only AMD module and uses inline html code as template (it uses native template engine). Here are some [examples](http://kasheftin.github.io/ko-widget/index-example2.html). Let's consider this string: 
+Actually we define two bindings - widget and widgetInline. The first one uses require.js to load JS-code from some AMD module and template from corresponding html file. The second one loads only AMD module and uses inline html code as template (it uses native template engine). Here are some [examples](http://kasheftin.github.io/ko-widget/src/index-example2.html). Let's consider this string: 
 
     <!-- ko widget: 'test1' --><!-- /ko -->
 This case binding uses require.js to load widgets/test1/main.js (AMD module) and widgets/test1/main.html (html template loaded with require text! plugin), and then applies template binding with data property from AMD-module and html property from html string (template binding uses string template engine).
@@ -47,22 +47,22 @@ At last, widget binding supports template object in properties - it's thrown to 
 
 An observable as a widget name
 ------------------------------
-One can use an observable string as a widget name, see [example 3](http://kasheftin.github.io/ko-widget/index-example3.html).
+One can use an observable string as a widget name, see [example 3](http://kasheftin.github.io/ko-widget/src/index-example3.html).
 
 Sending options to widget from binding
 --------------------------------------
-All binding widget options are available from inside widget constructor. In case options are string we set them as widget name, otherwise there should be defined name property, see [example 4](http://kasheftin.github.io/ko-widget/index-example4.html):
+All binding widget options are available from inside widget constructor. In case options are string we set them as widget name, otherwise there should be defined name property, see [example 4](http://kasheftin.github.io/ko-widget/src/index-example4.html):
 
 	<!-- ko widget: {name:'test1',param1:'This parameter is set from widget binding'} --><!-- /ko -->
 
 Creating widget from inside javascript
 --------------------------------------
-We've defined ko.createWidget and ko.createWidgetInline one can use to create widgets dynamically from javascript, but theese methods are just wrappers for ko.applyBindingToNode, see [example 5](http://kasheftin.github.io/ko-widget/index-example5.html).
+We've defined ko.createWidget and ko.createWidgetInline one can use to create widgets dynamically from javascript, but theese methods are just wrappers for ko.applyBindingToNode, see [example 5](http://kasheftin.github.io/ko-widget/src/index-example5.html).
 
 Communication between widgets
 -----------------------------
-We don't know what widgets are defined on a page that's why we have some object to be common for all instances. That's up to user to build communication, for example one can send the same observable to all widgets in widget binding options. Usually we use one instance of event emitter among all widgets, that is stored in root context, see [example 6](http://kasheftin.github.io/ko-widget/index-example6.html).
+We don't know what widgets are defined on a page that's why we have some object to be common for all instances. That's up to user to build communication, for example one can send the same observable to all widgets in widget binding options. Usually we use one instance of event emitter among all widgets, that is stored in root context, see [example 6](http://kasheftin.github.io/ko-widget/src/index-example6.html).
 
 Nested widget bindings
 ----------------------
-Nested widgets are also supported. And here's main complexity. In case of destroying a parent widget, all nested widgets should be also destroyed. That's why we keep a widget's tree - every widget has a link to _parentWidget and has an observableArray with _childrenWidgets. Here is the [example 7](http://kasheftin.github.io/ko-widget/index-example7.html), where widget might create/destroy subwidgets reqursively, and each instance sends some pings that indicate that it's alive. 
+Nested widgets are also supported. And here's main complexity. In case of destroying a parent widget, all nested widgets should be also destroyed. That's why we keep a widget's tree - every widget has a link to _parentWidget and has an observableArray with _childrenWidgets. Here is the [example 7](http://kasheftin.github.io/ko-widget/src/index-example7.html), where widget might create/destroy subwidgets reqursively, and each instance sends some pings that indicate that it's alive. 
