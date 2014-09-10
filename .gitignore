@@ -2,3 +2,4 @@
 *.log.*
 *.pid
 *.bat
+node_modules

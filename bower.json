@@ -8,6 +8,8 @@
 		"bootstrap": "latest",
         "jquery": "latest",
         "knockout": "latest",
-        "EventEmitter": "https://github.com/Wolfy87/EventEmitter.git"
+        "EventEmitter": "https://github.com/Wolfy87/EventEmitter.git",
+        "almond": "latest",
+        "r.js": "latest"
     }
 }
