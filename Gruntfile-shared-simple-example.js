@@ -17,7 +17,7 @@ module.exports = function(grunt) {
 					],
 					out: "build-shared/main.js",
 					optimize: "none",
-					wrap: true
+					wrap: false
 				}
 			}
 		},
