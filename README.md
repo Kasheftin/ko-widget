@@ -14,13 +14,14 @@ We use
 * [Require.js text plugin](http://github.com/requirejs/text) - for loading widget's html templates.
 * [JQuery](http://jquery.com) - could be simply switched to underscore or any other utility lib.
 * [EventEmitter](http://github.com/Wolfy87/EventEmitter.git) - for communication between widgets.
+* [Grunt](http://www.gruntjs.org/), [Almond](http://github.com/jrburke/almond) - for building sample releases.
 
 The code consists of two parts - string template engine and widget binding itself.
 
 String Template Engine
 ----------------------
 
-[Knockout](http://knockoutjs.com) has two common template engines. They are named template engine and inline template engine. We want to load widget's template from file with [Require.js text plugin](http://github.com/requirejs/text), that's why we need custom template engine that could render template from string of html code. Here it is - [stringTemplateEngine.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/js/stringTemplateEngine.js). We redefined nativeTemplateEngine.makeTemplateSource method, and now native template binding supports optional "html" parameter that should be a (observable) string with html code. Any other template engines and options are also supported the same way as before. Here's the [example 1](http://kasheftin.github.io/ko-widget/src/index-example1.html) that shows that our template engine hasn't broken anything.
+[Knockout](http://knockoutjs.com) has two common template engines. They are named template engine and inline template engine. We want to load widget's template from file with [Require.js text plugin](http://github.com/requirejs/text), that's why we need custom template engine that could render template from string of html code. Here it is - [stringTemplateEngine.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/src/js/ko-widget/stringTemplateEngine.js). We redefined nativeTemplateEngine.makeTemplateSource method, and now native template binding supports optional "html" parameter that should be a (observable) string with html code. Any other template engines and options are also supported the same way as before. Here's the [example 1](http://kasheftin.github.io/ko-widget/src/index-example1.html) that shows that our template engine hasn't broken anything.
 
 Widget binding
 --------------
@@ -66,3 +67,15 @@ We don't know what widgets are defined on a page that's why we have some object 
 Nested widget bindings
 ----------------------
 Nested widgets are also supported. And here's main complexity. In case of destroying a parent widget, all nested widgets should be also destroyed. That's why we keep a widget's tree - every widget has a link to _parentWidget and has an observableArray with _childrenWidgets. Here is the [example 7](http://kasheftin.github.io/ko-widget/src/index-example7.html), where widget might create/destroy subwidgets reqursively, and each instance sends some pings that indicate that it's alive. 
+
+Production builds
+-----------------
+We created two sample builds - the first one uses [almond](http://github.com/jrburke/almond), includes all widgets and is wrapped in local context, and the second one uses [requirejs](http://requirejs.org) itself, includes several widgets and allows dynamic loading of other ones on demand.
+
+Almond build
+------------
+Obviously, r.js build tool does not know anything about what widgets are in use on each page. That's why we have to traverse widget's dir by ourselves and manually specify what files we want to include. We use [grunt](http://gruntjs.org), and here is the simple config where we specify files manually: [Gruntfile-almond-simple-example.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/Gruntfile-almond-simple-example.js). Of course that's possible to use any grunt or node tool for collecting the file list (in our main build config [Grunt.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/Gruntfile.js) we use node fs and grunt.file.recurse). The working almond-released examples of this repo could be found here: [example 1](http://kasheftin.github.io/ko-widget/build-almond/index-example1.html), [example 2](http://kasheftin.github.io/ko-widget/build-almond/index-example2.html), [example 3](http://kasheftin.github.io/ko-widget/build-almond/index-example3.html), [example 4](http://kasheftin.github.io/ko-widget/build-almond/index-example4.html), [example 5](http://kasheftin.github.io/ko-widget/build-almond/index-example5.html), [example 6](http://kasheftin.github.io/ko-widget/build-almond/index-example6.html), [example 7](http://kasheftin.github.io/ko-widget/build-almond/index-example7.html).
+
+Shared build
+------------
+We assumed that debugger widget is not used in common case and removed it from build. Instead of this we just copy debugger widget files to the build dir so that requirejs could find them on demand. Here's the sample config: [Gruntfile-almond-simple-example.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/Gruntfile-shared-simple-example.js).  The working shared-released examples of this repo could be found here: [example 1](http://kasheftin.github.io/ko-widget/build-shared/index-example1.html), [example 2](http://kasheftin.github.io/ko-widget/build-shared/index-example2.html), [example 3](http://kasheftin.github.io/ko-widget/build-shared/index-example3.html), [example 4](http://kasheftin.github.io/ko-widget/build-shared/index-example4.html), [example 5](http://kasheftin.github.io/ko-widget/build-shared/index-example5.html), [example 6](http://kasheftin.github.io/ko-widget/build-shared/index-example6.html), [example 7](http://kasheftin.github.io/ko-widget/build-shared/index-example7.html).
