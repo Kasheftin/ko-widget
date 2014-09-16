@@ -11,8 +11,8 @@ require.config({
 });
 
 require(["domReady!","knockout","EventEmitter"],function(doc,ko,EventEmitter) {
-    var RootContest = function() {
+    var RootContext = function() {
         this.eventEmitter = new EventEmitter();
     }
-    ko.applyBindings(new RootContest);
+    ko.applyBindings(new RootContext);
 });

@@ -1,6 +1,6 @@
 {
   "name": "ko-widget",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Knockout Widget Binding",
   "homepage": "http://github.com/Kasheftin/ko-widget",
   "author": "Alexey Kuznetsov",
@@ -8,6 +8,8 @@
   "devDependencies": {
     "grunt": "~0.4.5",
     "grunt-contrib-uglify": "~0.5.1",
-    "grunt-contrib-requirejs": "~0.4.4"
+    "grunt-contrib-requirejs": "~0.4.4",
+    "grunt-exec": "~0.4.6",
+    "grunt-processhtml": "~0.3.3"
   }
 }

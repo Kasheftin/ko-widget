@@ -17,9 +17,6 @@ define(["jquery","knockout"],function($,ko) {
 
 	TestReq.prototype.remSubWidgetByI = function(i) {
 		this.subwidgets.splice(i,1);
-		if (this._childrenWidgets() && this._childrenWidgets().length>i) {
-			this._childrenWidgets()[i].destroy();
-		}
 	}
 
 	TestReq.prototype.remWidget = function() {

@@ -1,0 +1,7 @@
+(function () {
+	
+	// jQuery non-global fix
+	var module = {
+	    exports: {}
+	}
+	

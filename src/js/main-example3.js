@@ -11,8 +11,8 @@ require.config({
 });
 
 require(["domReady!","knockout"],function(doc,ko) {
-    var App = function() {
+    var RootContext = function() {
         this.widgetName = ko.observable("test1");
     }
-    ko.applyBindings(new App);
+    ko.applyBindings(new RootContext);
 });

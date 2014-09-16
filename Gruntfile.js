@@ -45,7 +45,10 @@ module.exports = function(grunt) {
 				include: allWidgetFiles.concat(["./"+name,"../lib/almond/almond"]),
 				out: "build-almond/" + mainJs,
 				optimize: "none",
-				wrap: true
+				wrap: {
+					startFile: "src/almond.start.part",
+					endFile: "src/almond.end.part"
+				}
 			}
 		}
 		tasks.almond.push("requirejs:almond-"+name);

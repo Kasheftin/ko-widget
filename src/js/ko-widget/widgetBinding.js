@@ -18,13 +18,13 @@ define(function() {
 			Widget.prototype._isWidget = true;
 
 			var _reinitWidget = function(o) {
+				if (!o.widgetName) return;
 				var requireParams = o.widgetMode=="html"?["widgets/"+o.widgetName+"/main","text!widgets/"+o.widgetName+"/main.html"]:["widgets/"+o.widgetName+"/main"];
 				require(requireParams,function(Model,html) {
 					// Destroying previous widget in case widgetName is observable.
 					// Actually this is the only reason why widget update bindingHandler is wrapped to computed and is placed into init-action.
 					o.w && o.w._isWidget && o.w.destroy(o);
-
-					o.html = html;
+					html && (o.html = html);
 
 					// Extending Model with Widget and EventEmitter prototypes
 					if (typeof Model == "function") {
@@ -95,8 +95,12 @@ define(function() {
 				if (!o.parentWidget._isWidget)
 					o.parentWidget = bindingContext.$root;
 
+	            ko.utils.domNodeDisposal.addDisposeCallback(element,function() {
+	            	o.w && o.w._isWidget && o.w.destroy();
+	            });
+
 				ko.computed(function() {
-					o.options = ko.utils.unwrapObservable(valueAccessor());
+					o.options = ko.utils.unwrapObservable(valueAccessor())||{};
 					if (typeof o.options == "string") {
 						o.widgetName = o.options;
 						o.options = {name:o.widgetName};
@@ -106,7 +110,7 @@ define(function() {
 			        setTimeout(function() {
 			        	_reinitWidget(o);
 			        },0);
-				});
+				},null,{disposeWhenNodeIsRemoved:element});
 		        return {controlsDescendantBindings:true};
 			}
 

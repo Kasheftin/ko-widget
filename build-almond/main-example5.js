@@ -1,4 +1,10 @@
-(function () {/**
+(function () {
+	
+	// jQuery non-global fix
+	var module = {
+	    exports: {}
+	}
+	/**
  * @license almond 0.3.0 Copyright (c) 2011-2014, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/almond for details
@@ -15317,18 +15323,6 @@ ko.exportSymbol('nativeTemplateEngine', ko.nativeTemplateEngine);
 }());
 })();
 
-define('ko-widget/stopBinding',[],function() {
-	return {
-		attach: function(ko) {
-			ko.bindingHandlers.stopBinding = {
-			    init: function() {
-			        return { controlsDescendantBindings: true };
-			    }
-			}
-			ko.virtualElements.allowedBindings.stopBinding = true;
-		}
-	}
-});
 define('ko-widget/stringTemplateEngine',[],function() {
     return {
         attach: function(ko) {
@@ -15406,13 +15400,13 @@ define('ko-widget/widgetBinding',[],function() {
 			Widget.prototype._isWidget = true;
 
 			var _reinitWidget = function(o) {
+				if (!o.widgetName) return;
 				var requireParams = o.widgetMode=="html"?["widgets/"+o.widgetName+"/main","text!widgets/"+o.widgetName+"/main.html"]:["widgets/"+o.widgetName+"/main"];
 				require(requireParams,function(Model,html) {
 					// Destroying previous widget in case widgetName is observable.
 					// Actually this is the only reason why widget update bindingHandler is wrapped to computed and is placed into init-action.
 					o.w && o.w._isWidget && o.w.destroy(o);
-
-					o.html = html;
+					html && (o.html = html);
 
 					// Extending Model with Widget and EventEmitter prototypes
 					if (typeof Model == "function") {
@@ -15483,8 +15477,12 @@ define('ko-widget/widgetBinding',[],function() {
 				if (!o.parentWidget._isWidget)
 					o.parentWidget = bindingContext.$root;
 
+	            ko.utils.domNodeDisposal.addDisposeCallback(element,function() {
+	            	o.w && o.w._isWidget && o.w.destroy();
+	            });
+
 				ko.computed(function() {
-					o.options = ko.utils.unwrapObservable(valueAccessor());
+					o.options = ko.utils.unwrapObservable(valueAccessor())||{};
 					if (typeof o.options == "string") {
 						o.widgetName = o.options;
 						o.options = {name:o.widgetName};
@@ -15494,7 +15492,7 @@ define('ko-widget/widgetBinding',[],function() {
 			        setTimeout(function() {
 			        	_reinitWidget(o);
 			        },0);
-				});
+				},null,{disposeWhenNodeIsRemoved:element});
 		        return {controlsDescendantBindings:true};
 			}
 
@@ -15521,12 +15519,12 @@ define('ko-widget/widgetBinding',[],function() {
 		}
 	}
 });
-define('knockout',["knockout-source","./ko-widget/stopBinding","./ko-widget/stringTemplateEngine","./ko-widget/widgetBinding"],function(ko,stopBinding,stringTemplateEngine,widgetBinding) {
-	stopBinding.attach(ko);
+define('knockout',["knockout-source","./ko-widget/stringTemplateEngine","./ko-widget/widgetBinding"],function(ko,stringTemplateEngine,widgetBinding) {
 	stringTemplateEngine.attach(ko);
 	widgetBinding.attach(ko);
 	return ko;
 });
+
 define('widgets/debugger/main',["jquery","knockout"],function($,ko) {
 	var Debugger = function(o) {
 		var self = this;
@@ -15709,9 +15707,6 @@ define('widgets/testReq/main',["jquery","knockout"],function($,ko) {
 
 	TestReq.prototype.remSubWidgetByI = function(i) {
 		this.subwidgets.splice(i,1);
-		if (this._childrenWidgets() && this._childrenWidgets().length>i) {
-			this._childrenWidgets()[i].destroy();
-		}
 	}
 
 	TestReq.prototype.remWidget = function() {
@@ -15891,5 +15886,6 @@ require(["domReady!","jquery","knockout"],function(doc,$,ko) {
     ko.createWidgetInline($("#widgetInlineBindingContainer").get(0),{name:"test1",param1:"This option is set from javascript constructor"},this);
 });
 define("main-example5", function(){});
+
 
 }());
