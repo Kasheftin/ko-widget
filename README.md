@@ -66,7 +66,7 @@ We don't know what widgets are defined on a page that's why we have some object 
 
 Nested widget bindings
 ----------------------
-Nested widgets are also supported. And here's main complexity. In case of destroying a parent widget, all nested widgets should be also destroyed. That's why we keep a widget's tree - every widget has a link to _parentWidget and has an observableArray with _childrenWidgets. Here is the [example 7](http://kasheftin.github.io/ko-widget/src/index-example7.html), where widget might create/destroy subwidgets reqursively, and each instance sends some pings that indicate that it's alive. 
+Nested widgets are also supported. And here's main complexity. In case of destroying a parent widget, all nested widgets should be also destroyed. ~~That's why we keep a widget's tree - every widget has a link to _parentWidget and has an observableArray with _childrenWidgets.~~ Since disposeWhenNodeIsRemoved option works we don't need to keep full widgets tree. Here is the [example 7](http://kasheftin.github.io/ko-widget/src/index-example7.html), where widget might create/destroy subwidgets reqursively, and each instance sends some pings that indicate that it's alive. 
 
 Production builds
 -----------------
