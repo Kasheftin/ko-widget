@@ -15324,74 +15324,68 @@ ko.exportSymbol('nativeTemplateEngine', ko.nativeTemplateEngine);
 })();
 
 define('ko-widget/stringTemplateEngine',[],function() {
-    return {
-        attach: function(ko) {
-            ko.templateSources.stringTemplate = function(element,html) {
-             this.domElement = element;
-             this.html = ko.utils.unwrapObservable(html);
-            }
-            ko.templateSources.stringTemplate.prototype.text = function() {
-                if (arguments.length == 0)
-                    return this.html;
-                this.html = ko.utils.unwrapObservable(arguments[0]);
-            }
-            // The following is the copy-paste of named template data method
-            ko.templateSources.stringTemplate.prototype.data = function(key) {
-                if (arguments.length == 1) {
-                    return ko.utils.domData.get(this.domElement,"templateSourceData_"+key);
-                }
-                else {
-                    ko.utils.domData.set(this.domElement,"templateSourceData_"+key,arguments[1]);
-                }
-            }
+	return {
+		attach: function(ko) {
+			ko.templateSources.stringTemplate = function(element,html) {
+				this.domElement = element;
+				this.html = ko.utils.unwrapObservable(html);
+			}
+			ko.templateSources.stringTemplate.prototype.text = function() {
+				if (arguments.length == 0)
+					return this.html;
+				this.html = ko.utils.unwrapObservable(arguments[0]);
+			}
+			// The following is the copy-paste of named template data method
+			ko.templateSources.stringTemplate.prototype.data = function(key) {
+				if (arguments.length == 1) {
+					return ko.utils.domData.get(this.domElement,"templateSourceData_"+key);
+				}
+				else {
+					ko.utils.domData.set(this.domElement,"templateSourceData_"+key,arguments[1]);
+				}
+			}
 
-            var engine = new ko.nativeTemplateEngine();
+			var engine = new ko.nativeTemplateEngine();
 
-            // Here I have to redefine renderTemplate method. The reason is I want options.html value being accessible in makeTemplateSource method.
-            // Redefining works fine because makeTemplateSource we call only twice - in renderTemplate and rewriteTemplate methods. 
-            // But rewriteTemplate is turned off by allowTemplateRewriting=false in nativeTemplateEngine.
-            engine.renderTemplate = function(template,bindingContext,options,templateDocument) {
-                var templateSource = this.makeTemplateSource(template, templateDocument, bindingContext, options);
-                return this.renderTemplateSource(templateSource, bindingContext, options);
-            }
-            // The following is the copy-paste of original method with only two new strings inserted:
-            engine.makeTemplateSource = function(template, templateDocument, bindingContext, options) {
-                // Named template
-                if (typeof template == "string") {
-                    templateDocument = templateDocument || document;
-                    var elem = templateDocument.getElementById(template);
-                    if (!elem)
-                        throw new Error("Cannot find template with ID " + template);
-                    return new ko.templateSources.domElement(elem);
-                }
-                // Here we look for options.html and call our stringTemplate source  
-                else if (options && options.html) {
-                    // String template
-                    return new ko.templateSources.stringTemplate(template,options.html);
-                }
-                else if ((template.nodeType == 1) || (template.nodeType == 8)) {
-                    // Anonymous template
-                    return new ko.templateSources.anonymousTemplate(template);
-                }
-                else
-                    throw new Error("Unknown template type: " + template);
-            }
-            ko.setTemplateEngine(engine);
-        }
-    }
+			// Here I have to redefine renderTemplate method. The reason is I want options.html value being accessible in makeTemplateSource method.
+			// Redefining works fine because makeTemplateSource we call only twice - in renderTemplate and rewriteTemplate methods.
+			// But rewriteTemplate is turned off by allowTemplateRewriting=false in nativeTemplateEngine.
+			engine.renderTemplate = function(template,bindingContext,options,templateDocument) {
+				var templateSource = this.makeTemplateSource(template, templateDocument, bindingContext, options);
+				return this.renderTemplateSource(templateSource, bindingContext, options);
+			}
+			// The following is the copy-paste of original method with only two new strings inserted:
+			engine.makeTemplateSource = function(template, templateDocument, bindingContext, options) {
+				// Named template
+				if (typeof template == "string") {
+					templateDocument = templateDocument || document;
+					var elem = templateDocument.getElementById(template);
+					if (!elem)
+						throw new Error("Cannot find template with ID " + template);
+					return new ko.templateSources.domElement(elem);
+				}
+				// Here we look for options.html and call our stringTemplate source
+				else if (options && options.html) {
+					// String template
+					return new ko.templateSources.stringTemplate(template,options.html);
+				}
+				else if ((template.nodeType == 1) || (template.nodeType == 8)) {
+					// Anonymous template
+					return new ko.templateSources.anonymousTemplate(template);
+				}
+				else
+					throw new Error("Unknown template type: " + template);
+			}
+			ko.setTemplateEngine(engine);
+		}
+	}
 });
 define('ko-widget/widgetBinding',[],function() {
 	return {
-		attach: function(ko) {
+		attach: function(ko,debuggerMode) {
 
 			var Widget = function() { }
 			Widget.prototype.destroy = function(options) {
-				// Destroying children widgets reqursively
-				while (ko.isObservable(this._childrenWidgets) && this._childrenWidgets().length>0)
-					this._childrenWidgets()[0].destroy();
-				// Destroying the current widget from it's parentWidget
-				while (this._parentWidget && this._parentWidget._childrenWidgets && this._parentWidget._childrenWidgets.indexOf(this)!=-1)
-					this._parentWidget._childrenWidgets.splice(this._parentWidget._childrenWidgets.indexOf(this),1);
 				// Clearing DOM
 				ko.virtualElements.emptyNode(this._widgetElement);
 				if (typeof this.domDestroy == "function")
@@ -15401,7 +15395,15 @@ define('ko-widget/widgetBinding',[],function() {
 
 			var _reinitWidget = function(o) {
 				if (!o.widgetName) return;
-				var requireParams = o.widgetMode=="html"?["widgets/"+o.widgetName+"/main","text!widgets/"+o.widgetName+"/main.html"]:["widgets/"+o.widgetName+"/main"];
+				var rnd = (debuggerMode?"-rnd"+Math.round(Math.random()*10000):"");
+				/* Debugger mode (anticache) should be supported in nginx like this:
+					location / {
+						rewrite ^(.*?)-rnd\d+(.*)$ $1$2 break;
+						try_files $uri =404;
+						expires 0;
+					}
+				*/
+				var requireParams = o.widgetMode=="html"?["widgets/"+o.widgetName+"/main"+rnd,"text!widgets/"+o.widgetName+"/main.html"]:["widgets/"+o.widgetName+"/main"];
 				require(requireParams,function(Model,html) {
 					// Destroying previous widget in case widgetName is observable.
 					// Actually this is the only reason why widget update bindingHandler is wrapped to computed and is placed into init-action.
@@ -15416,17 +15418,8 @@ define('ko-widget/widgetBinding',[],function() {
 					}
 					else o.w = Model;
 
-					// We need _parentWidget and _widgetElement in widget.destroy method 
-					o.w._parentWidget = o.parentWidget;
+					// We need _widgetElement in widget.destroy method 
 					o.w._widgetElement = o.element;
-					o.w._widgetName = o.widgetName;
-
-					// Registering widget in parentWidget
-					if (!o.w._childrenWidgets)
-						o.w._childrenWidgets = ko.observableArray();
-					if (!o.parentWidget._childrenWidgets)
-						o.parentWidget._childrenWidgets = ko.observableArray();
-					o.parentWidget._childrenWidgets.push(o.w);
 
 					// Generating template value accessor - taking options.template property and appending it with data as current widget and html string from file.
 					var templateValueAccessor = function() {
@@ -15434,7 +15427,7 @@ define('ko-widget/widgetBinding',[],function() {
 						value = (value||{}).template||{};
 						value.data = o.w;
 						if (o.widgetMode=="html") value.html = html;
-						return value;					
+						return value;
 					}
 
 					ko.bindingHandlers.template.init(o.element,templateValueAccessor);
@@ -15477,9 +15470,9 @@ define('ko-widget/widgetBinding',[],function() {
 				if (!o.parentWidget._isWidget)
 					o.parentWidget = bindingContext.$root;
 
-	            ko.utils.domNodeDisposal.addDisposeCallback(element,function() {
-	            	o.w && o.w._isWidget && o.w.destroy();
-	            });
+				ko.utils.domNodeDisposal.addDisposeCallback(element,function() {
+					o.w && o.w._isWidget && o.w.destroy();
+				});
 
 				ko.computed(function() {
 					o.options = ko.utils.unwrapObservable(valueAccessor())||{};
@@ -15488,12 +15481,12 @@ define('ko-widget/widgetBinding',[],function() {
 						o.options = {name:o.widgetName};
 					}
 					else o.widgetName = ko.utils.unwrapObservable(o.options.name);
-			        // We don't want any other observables affect recomputing widget binging (especially _childrenWidgets observableArray in widget.destroy method).
-			        setTimeout(function() {
-			        	_reinitWidget(o);
-			        },0);
+					// We don't want any other observables affect recomputing widget binging (especially _childrenWidgets observableArray in widget.destroy method).
+					setTimeout(function() {
+						_reinitWidget(o);
+					},0);
 				},null,{disposeWhenNodeIsRemoved:element});
-		        return {controlsDescendantBindings:true};
+				return {controlsDescendantBindings:true};
 			}
 
 			ko.bindingHandlers.widget = {
@@ -15686,7 +15679,7 @@ define('widgets/testPing/main',["knockout"],function(ko) {
 	return TestPing;
 });
 
-define('text!widgets/testReq/main.html',[],function () { return '<div class="well">\n\t<div>My WidgetId: <span data-bind="text:id"></span></div>\n\t<div>\n\t\t<button class="btn btn-default" data-bind="click:addSubWidget">Add sub widget</button>\n\t\t<button class="btn btn-default" data-bind="click:remSubWidget,enable:subwidgets().length>0">Remove sub widget</button>\n\t\t<button class="btn btn-default" data-bind="click:remWidget">Destroy Me</button>\n\t</div>\n\t<br>\n\t<div data-bind="foreach:subwidgets">\n\t\t<div data-bind="widget:{name:\'testReq\'}"></div>\n\t</div>\n</div>';});
+define('text!widgets/testReq/main.html',[],function () { return '<div class="well">\n\t<div>My WidgetId: <span data-bind="text:id"></span></div>\n\t<div>\n\t\t<button class="btn btn-default" data-bind="click:addSubWidget">Add sub widget</button>\n\t\t<button class="btn btn-default" data-bind="click:remSubWidget,enable:subwidgets().length>0">Remove sub widget</button>\n\t\t<button class="btn btn-default" data-bind="click:destroy">Destroy Me</button>\n\t</div>\n\t<br>\n\t<div data-bind="foreach:subwidgets">\n\t\t<div data-bind="widget:{name:\'testReq\'}"></div>\n\t</div>\n</div>';});
 
 define('widgets/testReq/main',["jquery","knockout"],function($,ko) {
 	var TestReq = function(o) {

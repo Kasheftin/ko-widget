@@ -1,15 +1,9 @@
 define(function() {
 	return {
-		attach: function(ko) {
+		attach: function(ko,debuggerMode) {
 
 			var Widget = function() { }
 			Widget.prototype.destroy = function(options) {
-				// Destroying children widgets reqursively
-				while (ko.isObservable(this._childrenWidgets) && this._childrenWidgets().length>0)
-					this._childrenWidgets()[0].destroy();
-				// Destroying the current widget from it's parentWidget
-				while (this._parentWidget && this._parentWidget._childrenWidgets && this._parentWidget._childrenWidgets.indexOf(this)!=-1)
-					this._parentWidget._childrenWidgets.splice(this._parentWidget._childrenWidgets.indexOf(this),1);
 				// Clearing DOM
 				ko.virtualElements.emptyNode(this._widgetElement);
 				if (typeof this.domDestroy == "function")
@@ -19,7 +13,15 @@ define(function() {
 
 			var _reinitWidget = function(o) {
 				if (!o.widgetName) return;
-				var requireParams = o.widgetMode=="html"?["widgets/"+o.widgetName+"/main","text!widgets/"+o.widgetName+"/main.html"]:["widgets/"+o.widgetName+"/main"];
+				var rnd = (debuggerMode?"-rnd"+Math.round(Math.random()*10000):"");
+				/* Debugger mode (anticache) should be supported in nginx like this:
+					location / {
+						rewrite ^(.*?)-rnd\d+(.*)$ $1$2 break;
+						try_files $uri =404;
+						expires 0;
+					}
+				*/
+				var requireParams = o.widgetMode=="html"?["widgets/"+o.widgetName+"/main"+rnd,"text!widgets/"+o.widgetName+"/main.html"]:["widgets/"+o.widgetName+"/main"];
 				require(requireParams,function(Model,html) {
 					// Destroying previous widget in case widgetName is observable.
 					// Actually this is the only reason why widget update bindingHandler is wrapped to computed and is placed into init-action.
@@ -34,17 +36,8 @@ define(function() {
 					}
 					else o.w = Model;
 
-					// We need _parentWidget and _widgetElement in widget.destroy method 
-					o.w._parentWidget = o.parentWidget;
+					// We need _widgetElement in widget.destroy method 
 					o.w._widgetElement = o.element;
-					o.w._widgetName = o.widgetName;
-
-					// Registering widget in parentWidget
-					if (!o.w._childrenWidgets)
-						o.w._childrenWidgets = ko.observableArray();
-					if (!o.parentWidget._childrenWidgets)
-						o.parentWidget._childrenWidgets = ko.observableArray();
-					o.parentWidget._childrenWidgets.push(o.w);
 
 					// Generating template value accessor - taking options.template property and appending it with data as current widget and html string from file.
 					var templateValueAccessor = function() {
@@ -52,7 +45,7 @@ define(function() {
 						value = (value||{}).template||{};
 						value.data = o.w;
 						if (o.widgetMode=="html") value.html = html;
-						return value;					
+						return value;
 					}
 
 					ko.bindingHandlers.template.init(o.element,templateValueAccessor);
@@ -95,9 +88,9 @@ define(function() {
 				if (!o.parentWidget._isWidget)
 					o.parentWidget = bindingContext.$root;
 
-	            ko.utils.domNodeDisposal.addDisposeCallback(element,function() {
-	            	o.w && o.w._isWidget && o.w.destroy();
-	            });
+				ko.utils.domNodeDisposal.addDisposeCallback(element,function() {
+					o.w && o.w._isWidget && o.w.destroy();
+				});
 
 				ko.computed(function() {
 					o.options = ko.utils.unwrapObservable(valueAccessor())||{};
@@ -106,12 +99,12 @@ define(function() {
 						o.options = {name:o.widgetName};
 					}
 					else o.widgetName = ko.utils.unwrapObservable(o.options.name);
-			        // We don't want any other observables affect recomputing widget binging (especially _childrenWidgets observableArray in widget.destroy method).
-			        setTimeout(function() {
-			        	_reinitWidget(o);
-			        },0);
+					// We don't want any other observables affect recomputing widget binging (especially _childrenWidgets observableArray in widget.destroy method).
+					setTimeout(function() {
+						_reinitWidget(o);
+					},0);
 				},null,{disposeWhenNodeIsRemoved:element});
-		        return {controlsDescendantBindings:true};
+				return {controlsDescendantBindings:true};
 			}
 
 			ko.bindingHandlers.widget = {
