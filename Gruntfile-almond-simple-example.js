@@ -8,7 +8,6 @@ module.exports = function(grunt) {
 					include: [
 						"./main",
 						"../lib/almond/almond",
-						"./widgets/debugger/main","text!./widgets/debugger/main.html",
 						"./widgets/test1/main","text!./widgets/test1/main.html",
 						"./widgets/test2/main","text!./widgets/test2/main.html",
 						"./widgets/testEmit/main","text!./widgets/testEmit/main.html",

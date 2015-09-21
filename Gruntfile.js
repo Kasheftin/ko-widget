@@ -13,8 +13,8 @@ module.exports = function(grunt) {
 
 	var fs = require("fs");
 
-	// Let's assume that debugger widget is not so necessary and it should be load by demand. Exculude it's files from allWidgetFiles array
-	var allWidgetFilesWithoutDebugger = allWidgetFiles.slice().filter(function(path) { return !/debugger/.test(path); });
+	// Let's assume that testEmit widget is not so necessary and it should be load by demand. Exculude it's files from allWidgetFiles array
+	var allWidgetFilesWithoutTestEmit = allWidgetFiles.slice().filter(function(path) { return !/testEmit/.test(path); });
 
 	// Collect all js/main.. files
 	var allMainJsFiles = fs.readdirSync("./src/js").filter(function(path) { return /^main/.test(path); });
@@ -73,17 +73,17 @@ module.exports = function(grunt) {
 	tasks.shared = [];
 
 	// Loop through all js/main.. config files
-	// Let's assume that debugger widget is not so incommon and it should be loaded on demand
-	// Include all widgets but debugger, js/main.. itself and requirejs lib to the build
-	// Almond does not support loading AMD modules on demand (and we want to have an ability to load debugger widget if it's required) that's why we use requirejs instead of almond
-	// Also we don't wrap build because in case of wrap external AMD files (debugger widget) do not see require and define methods from wrapped require.js lib
+	// Let's assume that testEmit widget is not so incommon and it should be loaded on demand
+	// Include all widgets but testEmit, js/main.. itself and requirejs lib to the build
+	// Almond does not support loading AMD modules on demand (and we want to have an ability to load testEmit widget if it's required) that's why we use requirejs instead of almond
+	// Also we don't wrap build because in case of wrap external AMD files (testEmit widget) do not see require and define methods from wrapped require.js lib
 	allMainJsFiles.forEach(function(mainJs) {
 		var name = mainJs.replace(/\.js$/,"");
 		config.requirejs["shared-"+name] = {
 			options: {
 				baseUrl: "src/js",
 				mainConfigFile: "src/js/" + mainJs,
-				include: allWidgetFilesWithoutDebugger.concat(["./"+name,"../lib/requirejs/require"]),
+				include: allWidgetFilesWithoutTestEmit.concat(["./"+name,"../lib/requirejs/require"]),
 				out: "build-shared/" + mainJs,
 				optimize: "none"
 			}
@@ -97,7 +97,7 @@ module.exports = function(grunt) {
 	tasks.shared.push("exec:shared");
 
 	config.exec.sharedWidgets = {
-		cmd: "mkdir -p build-shared/js/widgets && cp -r src/js/widgets/debugger build-shared/js/widgets/"
+		cmd: "mkdir -p build-shared/js/widgets && cp -r src/js/widgets/testEmit build-shared/js/widgets/"
 	}
 	tasks.shared.push("exec:sharedWidgets");
 

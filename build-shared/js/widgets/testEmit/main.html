@@ -1,0 +1,9 @@
+<div>I am: <span data-bind="text:widgetId"></span></div>
+<div>Received data: <span data-bind="text:receivedData"></span></div>
+<div class="form-inline">
+	Send to: 
+	<input type="text" class="form-control" placeholder="Send to" data-bind="value:sendTo">
+	Send data:
+	<input type="text" class="form-control" placeholder="Data to send" data-bind="value:sendData">
+	<button class="btn btn-default" data-bind="click:send">Send</button>
+</div>

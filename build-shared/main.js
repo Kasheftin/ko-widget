@@ -7828,6 +7828,7 @@ define('ko-widget/stringTemplateEngine',[],function() {
 		}
 	}
 });
+
 define('ko-widget/widgetBinding',[],function() {
 	return {
 		attach: function(ko,debuggerMode) {
@@ -7998,27 +7999,6 @@ define('widgets/test2/main',["knockout"],function(ko) {
 	}
 
 	return Test2;
-});
-
-define('text!widgets/testEmit/main.html',[],function () { return '<div>I am: <span data-bind="text:widgetId"></span></div>\n<div>Received data: <span data-bind="text:receivedData"></span></div>\n<div class="form-inline">\n\tSend to: \n\t<input type="text" class="form-control" placeholder="Send to" data-bind="value:sendTo">\n\tSend data:\n\t<input type="text" class="form-control" placeholder="Data to send" data-bind="value:sendData">\n\t<button class="btn btn-default" data-bind="click:send">Send</button>\n</div>';});
-
-define('widgets/testEmit/main',["knockout"],function(ko) {
-	var TestEmit = function(o) {
-		var self = this;
-		this.eventEmitter = o.core.eventEmitter;
-		this.widgetId = o.options.widgetId;
-		this.sendTo = ko.observable(o.options.sendTo);
-		this.sendData = ko.observable(o.options.sendData);
-		this.receivedData = ko.observable("");
-		this.eventEmitter.on(this.widgetId,function(data) {
-			self.receivedData(data);
-		});
-		this.send = function() {
-			self.eventEmitter.emit(self.sendTo(),self.sendData());
-		}
-	}
-
-	return TestEmit;
 });
 define('widgets/testPing/main',["knockout"],function(ko) {
 	var TestPing = function(o) {

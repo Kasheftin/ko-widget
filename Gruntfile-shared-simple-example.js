@@ -8,10 +8,9 @@ module.exports = function(grunt) {
 					include: [
 						"./main",
 						"../lib/requirejs/require",
-//						"./widgets/debugger/main","text!./widgets/debugger/main.html",
 						"./widgets/test1/main","text!./widgets/test1/main.html",
 						"./widgets/test2/main","text!./widgets/test2/main.html",
-						"./widgets/testEmit/main","text!./widgets/testEmit/main.html",
+//						"./widgets/testEmit/main","text!./widgets/testEmit/main.html",
 						"./widgets/testPing/main",
 						"./widgets/testReq/main","text!./widgets/testReq/main.html"
 					],
@@ -23,7 +22,7 @@ module.exports = function(grunt) {
 		},
 		exec: {
 			default: {
-				cmd: "cp -r src/css build-shared/ & cp -r src/lib build-shared/ & mkdir -p build-shared/js/widgets & cp -r src/js/widgets/debugger build-shared/js/widgets/"
+				cmd: "cp -r src/css build-shared/ & cp -r src/lib build-shared/ & mkdir -p build-shared/js/widgets & cp -r src/js/widgets/testEmit build-shared/js/widgets/"
 			}
 		},
 		processhtml: {

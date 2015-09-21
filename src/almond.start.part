@@ -1,7 +1,8 @@
-(function () {
-	
+((function() {
+
 	// jQuery non-global fix
-	var module = {
-	    exports: {}
+	if (typeof window.module == typeof undefined) {
+		window.module = {
+			exports: window.document
+		}
 	}
-	
