@@ -79,3 +79,10 @@ Obviously, r.js build tool does not know anything about what widgets are in use 
 Shared build
 ------------
 We assumed that testEmit widget is not used in common case and removed it from build. Instead of this we just copy testEmit widget folder to the build dir so that requirejs could find them on demand. Here's the sample config: [Gruntfile-almond-simple-example.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/Gruntfile-shared-simple-example.js).  The working shared-released examples of this repo could be found here: [example 1](http://kasheftin.github.io/ko-widget/build-shared/index-example1.html), [example 2](http://kasheftin.github.io/ko-widget/build-shared/index-example2.html), [example 3](http://kasheftin.github.io/ko-widget/build-shared/index-example3.html), [example 4](http://kasheftin.github.io/ko-widget/build-shared/index-example4.html), [example 5](http://kasheftin.github.io/ko-widget/build-shared/index-example5.html), [example 6](http://kasheftin.github.io/ko-widget/build-shared/index-example6.html), [example 7](http://kasheftin.github.io/ko-widget/build-shared/index-example7.html).
+
+Sending template options to widgetBinding
+-----------------------------------------
+There're some usefull options that might be necessary to throw to template binding (for example, afterRender, afterAdd, beforeRemove). They can be sent inside `template` property, like this:
+
+	<!-- ko widget: {name:'test1',template:{afterRender:afterRender}} --><!-- /ko -->
+
