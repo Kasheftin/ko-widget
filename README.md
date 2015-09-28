@@ -21,12 +21,12 @@ The code consists of two parts - string template engine and widget binding itsel
 String Template Engine
 ----------------------
 
-[Knockout](http://knockoutjs.com) has two common template engines. They are named template engine and inline template engine. We want to load widget's template from file with [Require.js text plugin](http://github.com/requirejs/text), that's why we need custom template engine that could render template from string of html code. Here it is - [stringTemplateEngine.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/src/js/ko-widget/stringTemplateEngine.js). We redefined nativeTemplateEngine.makeTemplateSource method, and now native template binding supports optional "html" parameter that should be a (observable) string with html code. Any other template engines and options are also supported the same way as before. Here's the [example 1](http://kasheftin.github.io/ko-widget/src/index-example1.html) that shows that our template engine hasn't broken anything.
+[Knockout](http://knockoutjs.com) has two common template engines. They are named template engine and inline template engine. We want to load widget's template from file with [Require.js text plugin](http://github.com/requirejs/text), that's why we need custom template engine that could render template from string of html code. Here it is - [stringTemplateEngine.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/src/stringTemplateEngine.js). We redefined nativeTemplateEngine.makeTemplateSource method, and now native template binding supports optional "html" parameter that should be a (observable) string with html code. Any other template engines and options are also supported the same way as before. Here's the [example 1](http://kasheftin.github.io/ko-widget/examples/src/index-example1.html) that shows that our template engine hasn't broken anything.
 
 Widget binding
 --------------
 
-Actually we define two bindings - widget and widgetInline. The first one uses require.js to load JS-code from some AMD module and template from corresponding html file. The second one loads only AMD module and uses inline html code as template (it uses native template engine). Here are some [examples](http://kasheftin.github.io/ko-widget/src/index-example2.html). Let's consider this string: 
+Actually we define two bindings - widget and widgetInline. The first one uses require.js to load JS-code from some AMD module and template from corresponding html file. The second one loads only AMD module and uses inline html code as template (it uses native template engine). Here are some [examples](http://kasheftin.github.io/ko-widget/examples/src/index-example2.html). Let's consider this string: 
 
     <!-- ko widget: 'test1' --><!-- /ko -->
 This case binding uses require.js to load widgets/test1/main.js (AMD module) and widgets/test1/main.html (html template loaded with require text! plugin), and then applies template binding with data property from AMD-module and html property from html string (template binding uses string template engine).
@@ -48,41 +48,44 @@ At last, widget binding supports template object in properties - it's thrown to 
 
 An observable as a widget name
 ------------------------------
-One can use an observable string as a widget name, see [example 3](http://kasheftin.github.io/ko-widget/src/index-example3.html).
+One can use an observable string as a widget name, see [example 3](http://kasheftin.github.io/ko-widget/examples/src/index-example3.html).
 
 Sending options to widget from binding
 --------------------------------------
-All binding widget options are available from inside widget constructor. In case options are string we set them as widget name, otherwise there should be defined name property, see [example 4](http://kasheftin.github.io/ko-widget/src/index-example4.html):
+All binding widget options are available from inside widget constructor. In case options are string we set them as widget name, otherwise there should be defined name property, see [example 4](http://kasheftin.github.io/ko-widget/examples/src/index-example4.html):
 
 	<!-- ko widget: {name:'test1',param1:'This parameter is set from widget binding'} --><!-- /ko -->
 
 Creating widget from inside javascript
 --------------------------------------
-We've defined ko.createWidget and ko.createWidgetInline one can use to create widgets dynamically from javascript, but theese methods are just wrappers for ko.applyBindingToNode, see [example 5](http://kasheftin.github.io/ko-widget/src/index-example5.html).
+We've defined ko.createWidget and ko.createWidgetInline one can use to create widgets dynamically from javascript, but theese methods are just wrappers for ko.applyBindingToNode, see [example 5](http://kasheftin.github.io/ko-widget/examples/src/index-example5.html).
 
 Communication between widgets
 -----------------------------
-We don't know what widgets are defined on a page that's why we have some object to be common for all instances. That's up to user to build communication, for example one can send the same observable to all widgets in widget binding options. Usually we use one instance of event emitter among all widgets, that is stored in root context, see [example 6](http://kasheftin.github.io/ko-widget/src/index-example6.html).
+We don't know what widgets are defined on a page that's why we have some object to be common for all instances. That's up to user to build communication, for example one can send the same observable to all widgets in widget binding options. Usually we use one instance of event emitter among all widgets, that is stored in root context, see [example 6](http://kasheftin.github.io/ko-widget/examples/src/index-example6.html).
 
 Nested widget bindings
 ----------------------
-Nested widgets are also supported. And here's main complexity. In case of destroying a parent widget, all nested widgets should be also destroyed. ~~That's why we keep a widget's tree - every widget has a link to _parentWidget and has an observableArray with _childrenWidgets.~~ Since disposeWhenNodeIsRemoved option works we don't need to keep full widgets tree. Here is the [example 7](http://kasheftin.github.io/ko-widget/src/index-example7.html), where widget might create/destroy subwidgets reqursively, and each instance sends some pings that indicate that it's alive. 
+Nested widgets are also supported. And here's main complexity. In case of destroying a parent widget, all nested widgets should be also destroyed. ~~That's why we keep a widget's tree - every widget has a link to _parentWidget and has an observableArray with _childrenWidgets.~~ Since disposeWhenNodeIsRemoved option works we don't need to keep full widgets tree. Here is the [example 7](http://kasheftin.github.io/ko-widget/examples/src/index-example7.html), where widget might create/destroy subwidgets reqursively, and each instance sends some pings that indicate that it's alive. 
 
 Production builds
 -----------------
 We created two sample builds - the first one uses [almond](http://github.com/jrburke/almond), includes all widgets and is wrapped in local context, and the second one uses [requirejs](http://requirejs.org) itself, includes several widgets and allows dynamic loading of other ones on demand.
 
-Almond build
-------------
-Obviously, r.js build tool does not know anything about what widgets are in use on each page. That's why we have to traverse widget's dir by ourselves and manually specify what files we want to include. We use [grunt](http://gruntjs.org), and here is the simple config where we specify files manually: [Gruntfile-almond-simple-example.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/Gruntfile-almond-simple-example.js). Of course that's possible to use any grunt or node tool for collecting the file list (in our main build config [Grunt.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/Gruntfile.js) we use node fs and grunt.file.recurse). The working almond-released examples of this repo could be found here: [example 1](http://kasheftin.github.io/ko-widget/build-almond/index-example1.html), [example 2](http://kasheftin.github.io/ko-widget/build-almond/index-example2.html), [example 3](http://kasheftin.github.io/ko-widget/build-almond/index-example3.html), [example 4](http://kasheftin.github.io/ko-widget/build-almond/index-example4.html), [example 5](http://kasheftin.github.io/ko-widget/build-almond/index-example5.html), [example 6](http://kasheftin.github.io/ko-widget/build-almond/index-example6.html), [example 7](http://kasheftin.github.io/ko-widget/build-almond/index-example7.html).
-
-Shared build
-------------
-We assumed that testEmit widget is not used in common case and removed it from build. Instead of this we just copy testEmit widget folder to the build dir so that requirejs could find them on demand. Here's the sample config: [Gruntfile-almond-simple-example.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/Gruntfile-shared-simple-example.js).  The working shared-released examples of this repo could be found here: [example 1](http://kasheftin.github.io/ko-widget/build-shared/index-example1.html), [example 2](http://kasheftin.github.io/ko-widget/build-shared/index-example2.html), [example 3](http://kasheftin.github.io/ko-widget/build-shared/index-example3.html), [example 4](http://kasheftin.github.io/ko-widget/build-shared/index-example4.html), [example 5](http://kasheftin.github.io/ko-widget/build-shared/index-example5.html), [example 6](http://kasheftin.github.io/ko-widget/build-shared/index-example6.html), [example 7](http://kasheftin.github.io/ko-widget/build-shared/index-example7.html).
+Widget binding inside original named template
+---------------------------------------------
+It's just a test that widget binding works inside named template, see [example 8](http://kasheftin.github.io/ko-widget/examples/src/index-example8.html).
 
 Sending template options to widgetBinding
 -----------------------------------------
-There're some usefull options that might be necessary to throw to template binding (for example, afterRender, afterAdd, beforeRemove). They can be sent inside `template` property, like this:
+There're some usefull options that might be necessary to throw to template binding (for example, afterRender, afterAdd, beforeRemove). They can be sent inside `template` property, like this (see [example 9](http://kasheftin.github.io/ko-widget/examples/src/index-example9.html)):
 
 	<!-- ko widget: {name:'test1',template:{afterRender:afterRender}} --><!-- /ko -->
 
+Almond build
+------------
+Obviously, r.js build tool does not know anything about what widgets are in use on each page. That's why we have to traverse widget's dir by ourselves and manually specify what files we want to include. We use [grunt](http://gruntjs.org), and here is the simple config where we specify files manually: [Gruntfile-almond-simple-example.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/examples/Gruntfile-almond-simple-example.js). Of course that's possible to use any grunt or node tool for collecting the file list (in our main build config [Grunt.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/examples/Gruntfile.js) we use node fs and grunt.file.recurse). The working almond-released examples of this repo could be found here: [example 1](http://kasheftin.github.io/ko-widget/examples/build-almond/index-example1.html), [example 2](http://kasheftin.github.io/ko-widget/examples/build-almond/index-example2.html), [example 3](http://kasheftin.github.io/ko-widget/examples/build-almond/index-example3.html), [example 4](http://kasheftin.github.io/ko-widget/examples/build-almond/index-example4.html), [example 5](http://kasheftin.github.io/ko-widget/examples/build-almond/index-example5.html), [example 6](http://kasheftin.github.io/ko-widget/examples/build-almond/index-example6.html), [example 7](http://kasheftin.github.io/ko-widget/examples/build-almond/index-example7.html), [example 8](http://kasheftin.github.io/ko-widget/examples/build-almond/index-example8.html), [example 9](http://kasheftin.github.io/ko-widget/examples/build-almond/index-example9.html).
+
+Shared build
+------------
+We assumed that testEmit widget is not used in common case and removed it from build. Instead of this we just copy testEmit widget folder to the build dir so that requirejs could find them on demand. Here's the sample config: [Gruntfile-almond-simple-example.js](https://github.com/Kasheftin/ko-widget/blob/gh-pages/examples/Gruntfile-shared-simple-example.js).  The working shared-released examples of this repo could be found here: [example 1](http://kasheftin.github.io/ko-widget/examples/build-shared/index-example1.html), [example 2](http://kasheftin.github.io/ko-widget/examples/build-shared/index-example2.html), [example 3](http://kasheftin.github.io/ko-widget/examples/build-shared/index-example3.html), [example 4](http://kasheftin.github.io/ko-widget/examples/build-shared/index-example4.html), [example 5](http://kasheftin.github.io/ko-widget/examples/build-shared/index-example5.html), [example 6](http://kasheftin.github.io/ko-widget/examples/build-shared/index-example6.html), [example 7](http://kasheftin.github.io/ko-widget/examples/build-shared/index-example7.html), [example 8](http://kasheftin.github.io/ko-widget/examples/build-shared/index-example8.html), [example 9](http://kasheftin.github.io/ko-widget/examples/build-shared/index-example9.html).
