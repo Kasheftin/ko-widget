@@ -3,3 +3,4 @@
 *.pid
 *.bat
 node_modules
+examples/node_modules

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:fb="http://ogp.me/ns/fb#">
+<head>
+	<meta charset="utf-8" />
+	<title>Knockout widget binding example 1</title>
+	<meta name="description" content="" />
+	<meta name="author" content="Alexey Kuznetsov" />
+	<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link rel="stylesheet"  href="../../ext/bootstrap/dist/css/bootstrap.css" />
+</head>
+<body>
+
+<div class="container">
+	<br>
+	<div class="well">
+		<h3>Native named template</h3>
+		<div>Here we check that the native named template engine still works, and it's name could be an observable:</div>
+		<br>
+		<div class="well" data-bind="template:nativeNamedTemplateName"></div>
+		<div class="btn-group">
+			<button class="btn btn-default" data-bind="click:nativeNamedTemplateName.bind($data,'nativeNamedTemplate1')">Set nativeNamedTemplate1</button>
+			<button class="btn btn-default" data-bind="click:nativeNamedTemplateName.bind($data,'nativeNamedTemplate2')">Set nativeNamedTemplate2</button>
+		</div>
+	</div>
+	<div class="well">
+		<h3>Native inline template</h3>
+		<div>Here we check that the native inline template engine works as well:</div>
+		<br>
+		<div class="well" data-bind="template:{}">
+			<div>This is native inline template</div>
+			<div data-bind="text:param2"></div>
+		</div>
+	</div>
+	<div class="well">
+		<h3>String template</h3>
+		<div>Here's our custom string template engine - it might be a string or an observable string, when the last changes, template updates:</div>
+		<br>
+		<div class="well" data-bind="template:{html:stringTemplateContent}"></div>
+		<input type="text" class="form-control" data-bind="value:stringTemplateContent">
+	</div>
+</div>
+
+<script type="text/template" id="nativeNamedTemplate1">
+	<div>This is native named template 1</div>
+	<div data-bind="text:param1"></div>
+</script>
+
+<script type="text/template" id="nativeNamedTemplate2">
+	<div>This is native named template 2</div>
+	<div data-bind="text:param2"></div>
+</script>
+
+<script src="main-example1.js"></script>
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
     "name": "ko-widget",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "dependencies": {
        "requirejs": "latest",
         "requirejs-text": "latest",
@@ -10,5 +10,15 @@
         "knockout": "latest",
         "EventEmitter": "https://github.com/Wolfy87/EventEmitter.git",
         "almond": "latest"
-    }
+    },
+    "main": [
+        "./src/stringTemplateEngine.js",
+        "./src/widgetBinding.js"
+    ],
+    "ignore": [
+        "examples",
+        "ext",
+        ".bowerrc",
+        ".gitignore"
+    ]
 }
