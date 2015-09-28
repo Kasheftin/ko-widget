@@ -68,10 +68,6 @@ Nested widget bindings
 ----------------------
 Nested widgets are also supported. And here's main complexity. In case of destroying a parent widget, all nested widgets should be also destroyed. ~~That's why we keep a widget's tree - every widget has a link to _parentWidget and has an observableArray with _childrenWidgets.~~ Since disposeWhenNodeIsRemoved option works we don't need to keep full widgets tree. Here is the [example 7](http://kasheftin.github.io/ko-widget/examples/src/index-example7.html), where widget might create/destroy subwidgets reqursively, and each instance sends some pings that indicate that it's alive. 
 
-Production builds
------------------
-We created two sample builds - the first one uses [almond](http://github.com/jrburke/almond), includes all widgets and is wrapped in local context, and the second one uses [requirejs](http://requirejs.org) itself, includes several widgets and allows dynamic loading of other ones on demand.
-
 Widget binding inside original named template
 ---------------------------------------------
 It's just a test that widget binding works inside named template, see [example 8](http://kasheftin.github.io/ko-widget/examples/src/index-example8.html).
@@ -81,6 +77,10 @@ Sending template options to widgetBinding
 There're some usefull options that might be necessary to throw to template binding (for example, afterRender, afterAdd, beforeRemove). They can be sent inside `template` property, like this (see [example 9](http://kasheftin.github.io/ko-widget/examples/src/index-example9.html)):
 
 	<!-- ko widget: {name:'test1',template:{afterRender:afterRender}} --><!-- /ko -->
+
+Production builds
+-----------------
+We created two sample builds - the first one uses [almond](http://github.com/jrburke/almond), includes all widgets and is wrapped in local context, and the second one uses [requirejs](http://requirejs.org) itself, includes several widgets and allows dynamic loading of other ones on demand.
 
 Almond build
 ------------
