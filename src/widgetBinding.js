@@ -57,7 +57,12 @@ define(function() {
 						o.firstDomChild = ko.virtualElements.nextSibling(o.firstDomChild);
 
 					o.w.domInit && (typeof o.w.domInit == "function") && o.w.domInit(o);
-					(((ko.bindingHandlers||{}).widget||{}).callback||function(){})(o);
+
+					if (ko.bindingHandlers.hasOwnProperty("widget")) {
+						if (ko.bindingHandlers.widget.hasOwnProperty("callback") && (typeof ko.bindingHandlers.widget.callback == "function")) {
+							ko.bindingHandlers.widget.callback(o);
+						}
+					}
 					o.options.callback && (typeof o.options.callback == "function") && o.options.callback(o);
 				});
 			}
@@ -108,15 +113,18 @@ define(function() {
 				return {controlsDescendantBindings:true};
 			}
 
-			ko.bindingHandlers.widget = {
-				init: function(element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) {
-					return init(element,valueAccessor,allBindingsAccessor,viewModel,bindingContext,"html");
-				}
+			console.log("ko.bindingHandlers.widget",ko.bindingHandlers.widget);
+			if (!ko.bindingHandlers.hasOwnProperty("widget")) {
+				ko.bindingHandlers.widget = {};
 			}
-			ko.bindingHandlers.widgetInline = {
-				init: function(element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) {
-					return init(element,valueAccessor,allBindingsAccessor,viewModel,bindingContext,"inline");
-				}
+			if (!ko.bindingHandlers.hasOwnProperty("widgetInline")) {
+				ko.bindingHandlers.widgetInline = {};
+			}
+			ko.bindingHandlers.widget.init = function(element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) {
+				return init(element,valueAccessor,allBindingsAccessor,viewModel,bindingContext,"html");
+			}
+			ko.bindingHandlers.widgetInline.init = function(element,valueAccessor,allBindingsAccessor,viewModel,bindingContext) {
+				return init(element,valueAccessor,allBindingsAccessor,viewModel,bindingContext,"inline");
 			}
 
 			ko.virtualElements.allowedBindings.widget = true;
