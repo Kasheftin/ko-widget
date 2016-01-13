@@ -57,6 +57,7 @@ define(function() {
 						o.firstDomChild = ko.virtualElements.nextSibling(o.firstDomChild);
 
 					o.w.domInit && (typeof o.w.domInit == "function") && o.w.domInit(o);
+					(((ko.bindingHandlers||{}).widget||{}).callback||function(){})(o);
 					o.options.callback && (typeof o.options.callback == "function") && o.options.callback(o);
 				});
 			}
