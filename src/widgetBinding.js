@@ -1,6 +1,6 @@
 define(function() {
 	return {
-		attach: function(ko,debuggerMode) {
+		attach: function(ko,forceNoCacheMode) {
 
 			var Widget = function() { }
 			Widget.prototype.destroy = function(options) {
@@ -13,8 +13,8 @@ define(function() {
 
 			var _reinitWidget = function(o) {
 				if (!o.widgetName) return;
-				var rnd = (debuggerMode?"-rnd"+Math.round(Math.random()*10000):"");
-				/* Debugger mode (anticache) should be supported in nginx like this:
+				var rnd = (forceNoCacheMode?"-rnd"+Math.round(Math.random()*10000):"");
+				/* Force no cache mode should be supported in nginx like this:
 					location / {
 						rewrite ^(.*?)-rnd\d+(.*)$ $1$2 break;
 						try_files $uri =404;

@@ -1,24 +1,35 @@
 {
-    "name": "ko-widget",
-    "version": "1.0.3",
-    "dependencies": {
-       "requirejs": "latest",
-        "requirejs-text": "latest",
-        "requirejs-domready": "latest",
-		"bootstrap": "latest",
-        "jquery": "latest",
-        "knockout": "latest",
-        "EventEmitter": "https://github.com/Wolfy87/EventEmitter.git",
-        "almond": "latest"
-    },
-    "main": [
-        "./src/stringTemplateEngine.js",
-        "./src/widgetBinding.js"
-    ],
-    "ignore": [
-        "examples",
-        "ext",
-        ".bowerrc",
-        ".gitignore"
-    ]
+	"name": "ko-widget",
+	"description": "Knockout widget binding",
+	"version": "1.0.4",
+	"dependencies": {
+		"EventEmitter": "4.2.11",
+		"knockout": "3.3.0",
+		"requirejs": "2.1.20",
+		"requirejs-text": "2.0.14"
+	},
+	"devDependencies": {
+		"almond": "0.3.1",
+		"bootstrap": "3.3.5",
+		"jquery": "2.1.14",
+		"requirejs-domready": "2.0.1"
+	},
+	"moduleType": "amd",
+	"license": "MIT",
+	"ignore": [
+		"examples",
+		"ext",
+		".bowerrc",
+		".gitignore"
+	],
+	"main": "src/ko-widget.js",
+	"keywords": ["knockout widget","knockout component alternative","knockout amd loader"],
+	"authors": [
+		"Alexey Kuznetsov <kasheftin@gmail.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/kasheftin/ko-widget"
+	},
+	"private": false
 }
