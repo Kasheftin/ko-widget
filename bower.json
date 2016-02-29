@@ -3,12 +3,12 @@
 	"description": "Knockout widget binding",
 	"version": "1.0.4",
 	"dependencies": {
-		"EventEmitter": "4.2.11",
 		"knockout": "3.3.0",
 		"requirejs": "2.1.20",
 		"requirejs-text": "2.0.14"
 	},
 	"devDependencies": {
+		"eventEmitter": "4.3.0",
 		"almond": "0.3.1",
 		"bootstrap": "3.3.5",
 		"jquery": "2.1.14",
