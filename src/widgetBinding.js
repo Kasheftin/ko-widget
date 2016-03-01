@@ -113,7 +113,6 @@ define(function() {
 				return {controlsDescendantBindings:true};
 			}
 
-			console.log("ko.bindingHandlers.widget",ko.bindingHandlers.widget);
 			if (!ko.bindingHandlers.hasOwnProperty("widget")) {
 				ko.bindingHandlers.widget = {};
 			}
