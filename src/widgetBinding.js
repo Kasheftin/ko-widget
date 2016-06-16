@@ -21,12 +21,10 @@ define(function() {
 						expires 0;
 					}
 				*/
-				var requireParams = o.widgetMode=="html"?["widgets/"+o.widgetName+"/main"+rnd,"text!widgets/"+o.widgetName+"/main.html"]:["widgets/"+o.widgetName+"/main"];
-				require(requireParams,function(Model,html) {
+				require(["widgets/"+o.widgetName+"/main"+rnd],function(Model) {
 					// Destroying previous widget in case widgetName is observable.
 					// Actually this is the only reason why widget update bindingHandler is wrapped to computed and is placed into init-action.
 					o.w && o.w._isWidget && o.w.destroy(o);
-					html && (o.html = html);
 
 					// Extending Model with Widget and EventEmitter prototypes
 					if (typeof Model == "function") {
@@ -36,34 +34,41 @@ define(function() {
 					}
 					else o.w = Model;
 
-					// We need _widgetElement in widget.destroy method 
+					// We need _widgetElement in widget.destroy method.
 					o.w._widgetElement = o.element;
 
-					// Generating template value accessor - taking options.template property and appending it with data as current widget and html string from file.
-					var templateValueAccessor = function() {
-						var value = ko.utils.unwrapObservable(o.valueAccessor());
-						value = (value||{}).template||{};
-						value.data = o.w;
-						if (o.widgetMode=="html") value.html = html;
-						return value;
-					}
+					// widget now supports templateName property - if it's set it requires specified html template instead of default main.html.
+					var templateName = "main";
+					if (o.options.hasOwnProperty("templateName")) templateName = ko.utils.unwrapObservable(o.options.templateName);
+					if (o.w.hasOwnProperty("templateName")) templateName = ko.utils.unwrapObservable(o.w.templateName);
 
-					ko.bindingHandlers.template.init(o.element,templateValueAccessor);
-					ko.bindingHandlers.template.update(o.element,templateValueAccessor,o.allBindingsAccessor,o.viewModel,o.bindingContext);
-
-					// Very often we want to have a link to affected DOM in widget domInit.
-					o.firstDomChild = ko.virtualElements.firstChild(o.element);
-					while (o.firstDomChild && o.firstDomChild.nodeType != 1)
-						o.firstDomChild = ko.virtualElements.nextSibling(o.firstDomChild);
-
-					o.w.domInit && (typeof o.w.domInit == "function") && o.w.domInit(o);
-
-					if (ko.bindingHandlers.hasOwnProperty("widget")) {
-						if (ko.bindingHandlers.widget.hasOwnProperty("callback") && (typeof ko.bindingHandlers.widget.callback == "function")) {
-							ko.bindingHandlers.widget.callback(o);
+					require(o.widgetMode=="html"?["text!widgets/"+o.widgetName+"/"+templateName+".html"]:[],function(html) {
+						// Generating template value accessor - taking options.template property and appending it with data as current widget and html string from file.
+						var templateValueAccessor = function() {
+							var value = ko.utils.unwrapObservable(o.valueAccessor());
+							value = (value||{}).template||{};
+							value.data = o.w;
+							if (o.widgetMode=="html") value.html = html;
+							return value;
 						}
-					}
-					o.options.callback && (typeof o.options.callback == "function") && o.options.callback(o);
+
+						ko.bindingHandlers.template.init(o.element,templateValueAccessor);
+						ko.bindingHandlers.template.update(o.element,templateValueAccessor,o.allBindingsAccessor,o.viewModel,o.bindingContext);
+
+						// Very often we want to have a link to affected DOM in widget domInit.
+						o.firstDomChild = ko.virtualElements.firstChild(o.element);
+						while (o.firstDomChild && o.firstDomChild.nodeType != 1)
+							o.firstDomChild = ko.virtualElements.nextSibling(o.firstDomChild);
+
+						o.w.domInit && (typeof o.w.domInit == "function") && o.w.domInit(o);
+
+						if (ko.bindingHandlers.hasOwnProperty("widget")) {
+							if (ko.bindingHandlers.widget.hasOwnProperty("callback") && (typeof ko.bindingHandlers.widget.callback == "function")) {
+								ko.bindingHandlers.widget.callback(o);
+							}
+						}
+						o.options.callback && (typeof o.options.callback == "function") && o.options.callback(o);
+					});
 				});
 			}
 
@@ -81,6 +86,7 @@ define(function() {
 					parentWidget: null,
 					options: null
 				}
+				// Actually, we don't user parentWidget anymore.
 				// In knockout>=3.0.0 viewModel is deprecated, instead of this bindingContext.$data should be used.
 				// But widget binding could be called inside foreach or while cycle, and $data context is not necessary a (parent) widget.
 				// Here we try to find the first parent context that is widget. If there's no such contest, we set $root as parentWidget.
@@ -105,7 +111,9 @@ define(function() {
 						o.options = {name:o.widgetName};
 					}
 					else o.widgetName = ko.utils.unwrapObservable(o.options.name);
-					// We don't want any other observables affect recomputing widget binging (especially _childrenWidgets observableArray in widget.destroy method).
+					// Registering templateName in recompute in case it's an observable
+					if (o.options.hasOwnProperty("templateName") && ko.isObservable(o.options.templateName)) o.options.templateName(); 
+					// We don't want any other observables affect recomputing widget binging.
 					setTimeout(function() {
 						_reinitWidget(o);
 					},0);
