@@ -6,7 +6,9 @@ require.config({
         "knockout-source" : "../../ext/knockout/dist/knockout.debug",
         "domReady"        : "../../ext/requirejs-domready/domReady",
         "EventEmitter"    : "../../ext/EventEmitter/EventEmitter",
-        "text"            : "../../ext/requirejs-text/text"
+        "text"            : "../../ext/requirejs-text/text",
+        "underscore"      : "../../ext/underscore/underscore",
+        "moment"          : "../../ext/moment/moment"
     }
 });
 

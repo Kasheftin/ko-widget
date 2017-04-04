@@ -13,7 +13,7 @@
     "tag": "0.3.1",
     "commit": "8336992b1a3fee8d10310822d4222fb82d24f097"
   },
-  "_source": "git://github.com/jrburke/almond.git",
-  "_target": "*",
+  "_source": "https://github.com/jrburke/almond.git",
+  "_target": "0.3.1",
   "_originalSource": "almond"
 }

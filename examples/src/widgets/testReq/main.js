@@ -7,7 +7,11 @@ define(["jquery","knockout"],function($,ko) {
 	}
 
 	TestReq.prototype.addSubWidget = function() {
-		this.subwidgets.push({});
+		this.subwidgets.push("testReq");
+	}
+
+	TestReq.prototype.addHeavySubWidget = function() {
+		this.subwidgets.push("heavy");
 	}
 
 	TestReq.prototype.remSubWidget = function() {
@@ -17,14 +21,6 @@ define(["jquery","knockout"],function($,ko) {
 
 	TestReq.prototype.remSubWidgetByI = function(i) {
 		this.subwidgets.splice(i,1);
-	}
-
-	TestReq.prototype.remWidget = function() {
-		if (this._parentWidget && this._parentWidget.widgetName==this.widgetName) {
-			var i = this._parentWidget._childrenWidgets().indexOf(this);
-			(i!=-1) && this._parentWidget.remSubWidgetByI(i);
-		}
-		else this.destroy();
 	}
 
 	TestReq.prototype.runPing = function() {

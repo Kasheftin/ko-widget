@@ -2,11 +2,11 @@
 	<div>My WidgetId: <span data-bind="text:id"></span></div>
 	<div>
 		<button class="btn btn-default" data-bind="click:addSubWidget">Add sub widget</button>
+		<button class="btn btn-default" data-bind="click:addHeavySubWidget">Add heavy sub widget</button>
 		<button class="btn btn-default" data-bind="click:remSubWidget,enable:subwidgets().length>0">Remove sub widget</button>
-		<button class="btn btn-default" data-bind="click:destroy">Destroy Me</button>
 	</div>
 	<br>
 	<div data-bind="foreach:subwidgets">
-		<div data-bind="widget:{name:'testReq'}"></div>
+		<div data-bind="widget:$data"></div>
 	</div>
 </div>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:fb="http://ogp.me/ns/fb#">
+<head>
+	<meta charset="utf-8" />
+	<title>Knockout widget binding example 11</title>
+	<meta name="description" content="" />
+	<meta name="author" content="Alexey Kuznetsov" />
+	<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link rel="stylesheet"  href="../../ext/bootstrap/dist/css/bootstrap.css" />
+</head>
+<body>
+
+<div class="container">
+	<br>
+	<div class="well">
+		<h3>HEAP memory inspect</h3>
+		<div class="row" data-bind="widgetInline:'heavyMenu'">
+			<div class="col-sm-4">
+				<div><a href="#" data-bind="click:w.bind($data,'heavy1')">Set Heavy 1</a></div>
+				<div><a href="#" data-bind="click:w.bind($data,'heavy2')">Set Heavy 2</a></div>
+				<div><a href="#" data-bind="click:w.bind($data,null)">Clear</a></div>
+			</div>
+			<div class="col-sm-8">
+				<!-- ko if: w -->
+					<!-- ko widget: w --><!-- /ko -->
+				<!-- /ko -->
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- build:js main.js -->
+<script type="text/javascript" src="../../ext/requirejs/require.js" data-main="main"></script>
+<!-- /build -->
+
+</body>
+</html>
