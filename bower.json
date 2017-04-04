@@ -3,7 +3,7 @@
 	"description": "Knockout widget binding",
 	"version": "1.2.0",
 	"dependencies": {
-		"knockout": "3.5.0",
+		"knockout": "3.4.0",
 		"requirejs": "2.1.20",
 		"requirejs-text": "2.0.14"
 	},
