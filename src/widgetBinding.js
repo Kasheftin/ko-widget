@@ -2,16 +2,16 @@ define(function() {
 	return {
 		attach: function(ko,forceNoCacheMode) {
 
-			var destroyWidget = function(w,emptyNode) {
-				if (!w) return;
-				if (typeof(w.domDestroy)=="function") {
-					w.domDestroy.apply(w);
+			var destroyWidget = function(o) {
+				if (!o.w) return;
+				if (typeof(o.w.domDestroy)=="function") {
+					o.w.domDestroy.apply(o.w);
 				}
-				if (emptyNode && w._isWidget && w._widgetElement) {
-					ko.virtualElements.emptyNode(w._widgetElement);
+				if (o.w._isWidget && o.w._widgetElement) {
+					ko.virtualElements.emptyNode(o.w._widgetElement);
 				}
-				if (typeof(w.afterDomDestroy)=="function") {
-					w.afterDomDestroy.apply(w);
+				if (typeof(o.w.afterDomDestroy)=="function") {
+					o.w.afterDomDestroy.apply(o.w);
 				}
 			}
 
@@ -29,7 +29,7 @@ define(function() {
 					// Destroying previous widget in case widgetName or widget template name is observable.
 					// Actually this is the only reason why widget update bindingHandler is wrapped to computed and placed into the init-action.
 					if (o.w && o.w._isWidget) {
-						destroyWidget(o.w,true);
+						destroyWidget(o);
 					}
 
 					if (typeof(Model)=="function") {
@@ -99,7 +99,7 @@ define(function() {
 				}
 				ko.utils.domNodeDisposal.addDisposeCallback(element,function() {
 					if (o.w && o.w._isWidget) {
-						destroyWidget(o.w);
+						destroyWidget(o);
 					}
 				});
 				ko.computed(function() {
