@@ -66,19 +66,22 @@ define(function() {
 						}
 
 						// Generating template value accessor - taking options.template property and appending it with data as current widget and html string from file.
+						var customAfterRenderEnabled = false;
 						var templateValueAccessor = function() {
 							var value = ko.utils.unwrapObservable(o.valueAccessor());
 							value = (value||{}).template||{};
 							value.data = o.w;
 							if (o.widgetMode=="html") value.html = html;
-							var origAfterRender = value.afterRender;
-							value.afterRender = function(elements) {
-								afterRenderCallback(elements,origAfterRender);
+							if (customAfterRenderEnabled) {
+								var origAfterRender = value.afterRender;
+								value.afterRender = function(elements) {
+									afterRenderCallback(elements,origAfterRender);
+								}
 							}
 							return value;
 						}
-
 						ko.bindingHandlers.template.init(o.element,templateValueAccessor);
+						customAfterRenderEnabled = true;
 						ko.bindingHandlers.template.update(o.element,templateValueAccessor,o.allBindingsAccessor,o.viewModel,o.bindingContext);
 					});
 				});
